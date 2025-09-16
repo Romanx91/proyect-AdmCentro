@@ -1,0 +1,8 @@
+node_modules/
+
+build/
+config/config.json
+
+.env
+production.md
+.Ds_Store

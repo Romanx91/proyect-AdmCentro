@@ -1,0 +1,21 @@
+const router = require('express').Router()
+const ctrl = require('../controller/paymentOwner.controller')
+const validador = require('../../helpers/validador')
+
+router.use(validador.protect)
+router.get('/', ctrl.GetAll)
+router.get('/paginate', ctrl.Paginate)
+router.get('/statistics', ctrl.statistics)
+
+//Get by id
+router.get('/:id', ctrl.GetById)
+
+//Create
+router.post('/', ctrl.Post)
+
+//Update
+router.put('/:id', ctrl.Put)
+
+//Delete
+router.delete('/:id', ctrl.Destroy)
+module.exports = router

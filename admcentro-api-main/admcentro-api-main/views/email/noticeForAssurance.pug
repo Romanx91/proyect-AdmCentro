@@ -1,0 +1,21 @@
+extends baseEmail
+
+block content
+  p Estimados : #{data.assuranceName} ! 
+  p Espero se encuentren bien, mi nombre es Ivana, de Inmobiliaria Centro. Este mensaje es para NOTIFICARLE la situación de irregularidad en el pago del alquiler del inmueble locado por el Sr. #{data.fullName } sito en calle#{data.property} del cual Ud. Es garante. A la fecha se registra una deuda de tres (3) meses, más seguros y gastos de gestión.
+  p En caso que la deuda no sea regularizada en el transcurso de 30 dias, Ud. Volverá a recibir una intimación de pago como garante y solidariamente responsable.
+  br
+  br
+  br
+  p Gracias y saludos 
+  p Ivana
+
+  table.btn.btn-primary(role='presentation', border='0', cellpadding='0', cellspacing='0')
+    tbody
+      tr
+        td(align='left')
+          table(role='presentation', border='0', cellpadding='0', cellspacing='0')
+            tbody
+              tr
+                td
+  //- span Enviado el #{new Date()}

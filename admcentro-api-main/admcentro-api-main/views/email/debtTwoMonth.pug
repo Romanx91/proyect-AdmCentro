@@ -1,0 +1,22 @@
+extends baseEmail
+
+block content
+  strong(style='color : red') ALERTA!
+
+  p Hola  #{data.fullName}! Notificamos que se adeudan dos (2) meses  de alquiler(#{data.month}), recuerden que habiendo una deuda de 3 meses se enviara notificación informativa automática a las garantías.
+  p Por favor solicito que en lo posible trates de regularizar la deuda a la brevedad.
+  br
+  br
+  br
+  p Saludos 
+  p Immobiliaria Centro
+
+  table.btn.btn-primary(role='presentation', border='0', cellpadding='0', cellspacing='0')
+    tbody
+      tr
+        td(align='left')
+          table(role='presentation', border='0', cellpadding='0', cellspacing='0')
+            tbody
+              tr
+                td
+  //- span Enviado el #{new Date()}

@@ -1,0 +1,23 @@
+extends baseEmail
+
+block content
+  p Estimados: #{data.fullName} ! 
+  Me dirijo a Ud. a fin de intimarlo al pago de los alquileres adeudados correspondientes a los meses de #{data.month} , más seguro, gastos de gestión y gastos bancarios en relación al inmueble locado, sito en la calle #{data.property}, de la localidad de Rosario, Provincia de Santa Fe , los que ascienden en total a la suma de $#{data.total} pesos más intereses actualizado a la fecha de pago. Dicho pago deberá efectuarlo dentro del plazo de diez (10) días corridos a partir de la recepción de la presente, a taves de transferencia bancara a la cuenta de la Inmobiliaria:
+  p CBU 2470001810000001757223, Alias INMOBILIARIA.CENTRO, Razón social CORAZZA IVANA ANABEL
+  
+  p Doy a la presente el carácter de intimación de pago exigida por el art. 1222 del Código Civil y Comercial de la Nación, haciéndole saber que, en el caso de no abonar lo adeudado en el plazo establecido, se declarará en los términos del art. 1219 inc. c) del Código Civil y Comercial de la Nación resuelto el contrato por vuestra exclusiva culpa, promoviéndose en consecuencia la correspondiente demanda de desalojo por falta de pago y cobro de alquileres.- Queda Ud. debidamente notificado. Debiendo además tener al día el pago de las expensas, Impuestos, Tasas y Servicios (epe, gas y agua) y exhibir comprobantes o libre deuda.
+  br
+  br
+  br
+  p Saludos 
+  p Immobiliaria Centro
+
+  table.btn.btn-primary(role='presentation', border='0', cellpadding='0', cellspacing='0')
+    tbody
+      tr
+        td(align='left')
+          table(role='presentation', border='0', cellpadding='0', cellspacing='0')
+            tbody
+              tr
+                td
+  //- span Enviado el #{new Date()}
