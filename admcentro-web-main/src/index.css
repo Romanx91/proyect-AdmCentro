@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --PrimaryColor: #f16fa1;
+  --SecondaryColor: #8b55f5;
+  --AppBg: rgb(227 227 227);
+  --brand-color: #f16fa1;
+  --brand-color-2: #8b55f5;
+
+  --dark-color: rgb(15 23 42);
+  --dark-color-box: rgba(20, 42, 59, 0.835);
+  --dark-text: rgb(148 163 184);
+  --scroll-bar: rgba(2, 34, 58, 0.84);
+}
+
+* {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+/* a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: var(--PrimaryColor);
+} */
+
+/* width */
+/* ::-webkit-scrollbar {
+  width: 10px;
+} */
+
+/* Track */
+/* ::-webkit-scrollbar-track {
+  background: #000b1f;
+} */
+
+/* Handle */
+/* ::-webkit-scrollbar-thumb {
+  background: #1e242c;
+} */
+
+/* Handle on hover */
+/* ::-webkit-scrollbar-thumb:hover {
+  background: #132535;
+} */
+
+body {
+  /* background-color: rgb(0, 10, 19); */
+  background-color: var(--AppBg);
+  font-family: 'Roboto Slab';
+}
+
+.p-toast {
+  /* right:  10px; */
+  /* width: 270px !important; */
+}

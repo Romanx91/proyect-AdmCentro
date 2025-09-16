@@ -1,0 +1,29 @@
+@media (max-width: 380px) {
+	.btn-toggle-theme {
+		display: none;
+	}
+	.btns-form-actions {
+		flex-direction: column-reverse;
+		gap: 1.5rem;
+	}
+
+	.btns-form-actions button{
+		width: 100%;
+	}
+
+}
+@media (max-width: 300px) {
+	
+	.username-logged {
+		display: none;
+	}
+	
+}
+@media (max-width: 640px) {
+	.react-responsive-modal-modal {
+		margin: 0 !important;
+		width: 100%;
+	}
+	
+	
+}
