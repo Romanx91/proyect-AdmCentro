@@ -1,29 +1,32 @@
 @media (max-width: 380px) {
-	.btn-toggle-theme {
-		display: none;
-	}
-	.btns-form-actions {
-		flex-direction: column-reverse;
-		gap: 1.5rem;
-	}
+  .btn-toggle-theme {
+    display: none;
+  }
+  .btns-form-actions {
+    flex-direction: column-reverse;
+    gap: 1.5rem;
+  }
 
-	.btns-form-actions button{
-		width: 100%;
-	}
-
+  .btns-form-actions button {
+    width: 100%;
+  }
 }
 @media (max-width: 300px) {
-	
-	.username-logged {
-		display: none;
-	}
-	
+  .username-logged {
+    display: none;
+  }
 }
 @media (max-width: 640px) {
-	.react-responsive-modal-modal {
-		margin: 0 !important;
-		width: 100%;
-	}
-	
-	
+  .react-responsive-modal-modal {
+    margin: 0 !important;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  #pdf-download p,
+  #pdf-download div {
+    font-size: 0.8rem;
+    padding: 0.25rem;
+  }
 }

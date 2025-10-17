@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -55,10 +55,18 @@ a:hover {
 body {
   /* background-color: rgb(0, 10, 19); */
   background-color: var(--AppBg);
-  font-family: 'Roboto Slab';
+  font-family: "Roboto Slab";
 }
 
 .p-toast {
   /* right:  10px; */
   /* width: 270px !important; */
+}
+
+@media (max-width: 768px) {
+  #pdf-download p,
+  #pdf-download div {
+    font-size: 0.8rem;
+    padding: 0.25rem;
+  }
 }
