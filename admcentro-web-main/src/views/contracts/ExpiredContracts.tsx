@@ -15,32 +15,72 @@ import BoxContainerPage from "../../components/BoxContainerPage";
 import { Contract, IHistorialPrice } from "../../interfaces/Icontracts";
 import { DobleChevronAngle } from "../../components/icons/DobleChevronAngle";
 
-/* ==================== HELPERS (traídos del Código 1 y adaptados) ==================== */
+/* ==================== HELPERS ==================== */
 
 // Convierte "YYYY-MM-DD" a fecha LOCAL 00:00:00
 function fromISOToLocalMidnight(iso: string) {
   const [y, m, d] = iso.split("-").map(Number);
   return new Date(y, m - 1, d, 0, 0, 0, 0);
 }
+
 function toLocalMidnight(d: Date) {
   const nd = new Date(d);
   nd.setHours(0, 0, 0, 0);
   return nd;
 }
-function isWithinRange(target: Date, maxDays: number) {
-  const today = toLocalMidnight(new Date());
-  const t = toLocalMidnight(target);
-  const diff = Math.round(
-    (t.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
-  );
-  const currentDay = today.getDate();
-  const daysBackToFirst = -(currentDay - 1);
-  return diff >= daysBackToFirst && diff <= maxDays;
+
+// 🔥 NUEVA LÓGICA: rango por meses desde el 1° del mes actual
+function getMonthBasedRange(months: number) {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), now.getMonth(), 1); // 1/mes_actual
+
+  // Mes final: mes_actual + months
+  const totalMonths = now.getMonth() + months;
+  const finalYear = now.getFullYear() + Math.floor(totalMonths / 12);
+  const finalMonth = totalMonths % 12;
+
+  // Último día del mes final
+  const end = new Date(finalYear, finalMonth + 1, 0); // "0" → último día del mes anterior
+
+  return {
+    start: toLocalMidnight(start),
+    end: toLocalMidnight(end),
+  };
 }
+
+function isWithinMonthRange(target: Date, months: number): boolean {
+  const { start, end } = getMonthBasedRange(months);
+  const t = toLocalMidnight(target);
+  return t >= start && t <= end;
+}
+
+// 🔥 FIN NUEVA LÓGICA
 
 function getAdjustmentDates(contract: Contract) {
   const { adjustmentMonth } = contract;
-  let start = toLocalMidnight(new Date(contract.startDate));
+  let start: Date;
+
+  // Si hay historial de precios, usamos la última fecha como base
+  if (contract.PriceHistorials && contract.PriceHistorials.length > 0) {
+    const lastAdjustment = contract.PriceHistorials.reduce((latest, current) =>
+      new Date(current.createdAt) > new Date(latest.createdAt)
+        ? current
+        : latest
+    );
+    start = toLocalMidnight(new Date(lastAdjustment.createdAt));
+    console.log(
+      `✅ Último ajuste: ${
+        start.toISOString().split("T")[0]
+      } (día: ${start.getDate()})`
+    );
+  } else {
+    // Si no hay historial, usamos startDate
+    start = toLocalMidnight(new Date(contract.startDate));
+    console.log(
+      `✅ Sin historial, usando startDate: ${start.toISOString().split("T")[0]}`
+    );
+  }
+
   const endLocal = toLocalMidnight(new Date(contract.endDate));
 
   const adjustmentDates: string[] = [];
@@ -51,18 +91,59 @@ function getAdjustmentDates(contract: Contract) {
     return `${y}-${m}-${day}`;
   }
 
-  // 1° de cada período
+  // Calcular el próximo ajuste a partir del último ajuste
   while (start <= endLocal) {
-    const d1 = new Date(start);
-    d1.setDate(1);
-    adjustmentDates.push(toISODate(d1));
+    const dayOfMonth = start.getDate();
+    const lastDayOfMonth = new Date(
+      start.getFullYear(),
+      start.getMonth() + 1,
+      0
+    ).getDate();
+    const midMonth = Math.ceil(lastDayOfMonth / 2); // Mitad del mes
+
+    console.log(
+      `   ➡️ Día actual: ${dayOfMonth}, último día del mes: ${lastDayOfMonth}, mitad: ${midMonth}`
+    );
+
+    let nextAdjustment = new Date(start);
+    if (dayOfMonth >= midMonth) {
+      // Segunda mitad del mes → próximo ajuste es 1° del mes siguiente
+      nextAdjustment.setMonth(nextAdjustment.getMonth() + 1);
+      nextAdjustment.setDate(1);
+      console.log(
+        `   ✅ Segunda mitad → próximo ajuste: ${
+          nextAdjustment.toISOString().split("T")[0]
+        }`
+      );
+    } else {
+      // Primera mitad del mes → próximo ajuste es 1° del mismo mes
+      nextAdjustment.setDate(1);
+      console.log(
+        `   ✅ Primera mitad → próximo ajuste: ${
+          nextAdjustment.toISOString().split("T")[0]
+        }`
+      );
+    }
+
+    // Asegurarse de que el ajuste no sea antes del último ajuste
+
+    // Agregar el ajuste
+    adjustmentDates.push(toISODate(nextAdjustment));
+    console.log(`   📥 Añadido: ${toISODate(nextAdjustment)}`);
+
+    // Avanzar al próximo período
+    start = nextAdjustment;
     start.setMonth(start.getMonth() + adjustmentMonth);
+    console.log(
+      `   ➡️ Siguiente iteración: ${start.toISOString().split("T")[0]}\n`
+    );
   }
 
   // FIN (agrego la fecha de fin exacta si no quedó incluida)
   const endExactISO = toISODate(endLocal);
   if (adjustmentDates[adjustmentDates.length - 1] !== endExactISO) {
     adjustmentDates.push(endExactISO);
+    console.log(`   📥 Añadido FIN: ${endExactISO}`);
   }
 
   // Próxima >= hoy
@@ -72,9 +153,15 @@ function getAdjustmentDates(contract: Contract) {
     const d = fromISOToLocalMidnight(iso);
     if (d.getTime() >= today.getTime()) {
       nextAdjustmentDate = iso;
+      console.log(`   🎯 Próximo ajuste ≥ hoy: ${iso}`);
       break;
     }
   }
+
+  console.log(`\n📊 Resultado final:`, {
+    adjustmentDates,
+    nextAdjustmentDate,
+  });
 
   return { adjustmentDates, nextAdjustmentDate };
 }
@@ -119,21 +206,34 @@ const ExpiredContracts = () => {
     }
   };
 
-  /* === FILTRADO y ORDEN  ===
-     - endInRange: fecha de fin dentro del rango (desde día 1 del mes actual hasta "days")
-     - adjInRange: alguna fecha de ajuste dentro del rango
-     - isFin: próxima fecha de ajuste es el FIN del contrato
-  */
+  // 🔥 Convertir días a meses
+  const daysToMonths = (days: number): number => {
+    if (days === 30) return 1;
+    if (days === 60) return 2;
+    if (days === 90) return 3;
+    if (days === 120) return 4;
+    return 2; // fallback
+  };
+
+  const months = daysToMonths(days);
+
+  /* === FILTRADO y ORDEN  === */
   const contractsToUpdateOrEnding = data?.data.filter((c: Contract) => {
     const adj = getAdjustmentDates(c);
-    const endInRange = isWithinRange(fromISOToLocalMidnight(c.endDate), days);
-    const adjInRange = adj.adjustmentDates.some((d) =>
-      isWithinRange(fromISOToLocalMidnight(d), days)
+    const endInRange = isWithinMonthRange(
+      fromISOToLocalMidnight(c.endDate),
+      months
     );
-    const isFin =
+    const adjInRange = adj.adjustmentDates.some((d) =>
+      isWithinMonthRange(fromISOToLocalMidnight(d), months)
+    );
+    // Solo incluir isFin si el vencimiento está en rango (evita contratos lejanos)
+    const isFinAndInRange =
       !!adj.nextAdjustmentDate &&
-      adj.nextAdjustmentDate === adj.adjustmentDates.at(-1);
-    return endInRange || adjInRange || isFin;
+      adj.nextAdjustmentDate === adj.adjustmentDates.at(-1) &&
+      endInRange;
+
+    return endInRange || adjInRange || isFinAndInRange;
   });
 
   // Agrego adj y ordeno por próxima fecha de ajuste (nulos al final)
@@ -203,7 +303,6 @@ const ExpiredContracts = () => {
     overflow-y-auto
     touch-pan-x
     touch-pan-y
-    
 
     [-webkit-overflow-scrolling:touch]
     !bg-transparent
